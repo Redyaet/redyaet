@@ -12,3 +12,38 @@ document.querySelectorAll('nav ul li a').forEach(link => {
         }
     });
 });
+
+document.getElementById("contactForm").addEventListener("submit", async function (event) {
+    event.preventDefault(); // Prevent default form submission
+
+    const form = event.target;
+    const formData = new FormData(form);
+    const jsonData = {};
+
+    // Convert FormData to JSON
+    formData.forEach((value, key) => {
+        jsonData[key] = value;
+    });
+
+    try {
+        const response = await fetch(form.action, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(jsonData),
+        });
+
+        if (response.ok) {
+            alert("Message sent successfully!");
+            form.reset(); // Clear the form inputs
+        } else {
+            const errorText = await response.text();
+            console.error("Error:", errorText);
+            alert("Failed to send message. Please try again.");
+        }
+    } catch (error) {
+        console.error("Error occurred:", error);
+        alert("An error occurred. Please try again.");
+    }
+});
